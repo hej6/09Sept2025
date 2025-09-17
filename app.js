@@ -28,7 +28,7 @@ let serverObj = http.createServer(function (req, res)
 			schedule(urlObj.query, res);
 			break;
 		case '/cancel':
-			cancel();
+			cancel(urlObj.query, res);
 			break;
 		default:
 			error(404, 'pathname not found', res);
@@ -64,6 +64,7 @@ function schedule(queryObj, res)
                 time: queryObj.time
 	};
        	appointments.push(newAppt); //Adds newAppt to array
+	console.log('List of time slots: ', availableTimes); //Check in console
         console.log('List of appointments: ', appointments); //Check in console
 
        	res.writeHead(200, {'content-type': 'text/html'});
@@ -71,9 +72,38 @@ function schedule(queryObj, res)
         res.end();
 }
 
-function cancel()
+function cancel(queryObj, res)
 {
+	if (!queryObj.name || !queryObj.time || !queryObj.day) //Checks for missing variables
+        {
+                return error (400, 'Missing information', res);
+        }
 
+        if (!availableTimes[queryObj.day]) //Checks for day specifically
+        {
+                return error(400, 'Requested day is invalid', res);
+        }
+
+	const index = appointments.findIndex //Store index of appointment
+	(
+		a => a.name == queryObj.name &&
+		     a.day == queryObj.day &&
+		     a.time == queryObj.time
+	);
+
+	if (index === -1) //Checks for appointment 
+	{
+		return error(400, 'Appointment not found', res);
+	}
+	
+	const canceled = appointments.splice(index, 1)[0]; //Remove appointment
+	availableTimes[canceled.day].push(canceled.time); //Restore removed time slot 
+	console.log('List of time slots: ', availableTimes);
+	console.log('List of appointments: ', appointments);
+
+	res.writeHead(200, {'content-type': 'text/html'});
+	res.write('Appointment has been cancelled');
+	res.end();
 }
 
 function error(status, message, res)
