@@ -47,6 +47,15 @@ function schedule(queryObj, res)
 	if (index !== -1)
 	{
 		availableTimes[queryObj.day].splice(index, 1); //Remove time slot
+		
+		const newAppt = //Initializes and populates newAppt
+		{
+			name: queryObj.name,
+			day: queryObj.day,
+			time: queryObj.time
+		};
+		appointments.push(newAppt); //Adds newAppt to array
+		console.log('List of appointments: ', appointments); //Display appointments array
 
 		res.writeHead(200, {'content-type': 'text/html'});
                 res.write('Scheduled');
