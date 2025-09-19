@@ -30,6 +30,9 @@ let serverObj = http.createServer(function (req, res)
 		case '/cancel':
 			cancel(urlObj.query, res);
 			break;
+		case '/check':
+			check(urlObj.query, res);
+			break;
 		default:
 			error(404, 'pathname not found', res);
 	}
@@ -104,6 +107,31 @@ function cancel(queryObj, res)
 	res.writeHead(200, {'content-type': 'text/html'});
 	res.write('Appointment has been cancelled');
 	res.end();
+}
+
+function check(queryObj, res)
+{
+	if (!queryObj.time || !queryObj.day) //Checks for missing variables
+        {
+                return error (400, 'Missing information', res);
+        }
+
+        if (!availableTimes[queryObj.day]) //Checks for day specifically
+        {
+                return error(400, 'Requested day is invalid', res);
+        }
+
+        const index = availableTimes[queryObj.day].indexOf(queryObj.time); //Stores requested time slot
+
+        if (index != -1) //Checks time slot
+        {
+                res.write('Appointment time is available');
+		res.end();
+        }
+	else
+	{
+		return error(400, 'Appointment time not available', res);
+	}
 }
 
 function error(status, message, res)
