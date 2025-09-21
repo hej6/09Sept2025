@@ -66,13 +66,14 @@ function schedule(queryObj, res)
 		day: queryObj.day,
 		time: queryObj.time
 	};
-       	appointments.push(newAppt); //Adds newAppt to array
-	console.log('List of time slots: ', availableTimes); //Check in console
-        console.log('List of appointments: ', appointments); //Check in console
 
-       	res.writeHead(200, {'content-type': 'text/html'});
-       	res.write('Appointment has been scheduled');
-        res.end();
+	appointments.push(newAppt); //Adds newAppt to array
+	console.log('List of time slots: ', availableTimes); //Check in console
+	console.log('List of appointments: ', appointments);
+	
+	res.writeHead(200, {'content-type': 'text/html'});
+	res.write('Appointment has been scheduled');
+	res.end();
 }
 
 function cancel(queryObj, res)
