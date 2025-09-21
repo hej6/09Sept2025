@@ -22,7 +22,7 @@ let serverObj = http.createServer(function (req, res)
 	let urlObj = url.parse(req.url, true);
 	console.log(urlObj);
 
-	switch (urlObj.pathname)
+	switch (urlObj.pathname) //Execute based on query input by user
 	{
 		case '/schedule':
 			schedule(urlObj.query, res);
@@ -142,4 +142,4 @@ function error(status, message, res)
 }
 
 
-serverObj.listen(80, function() {console.log('Listening on Port 80')});
+serverObj.listen(80, function() {console.log('Listening on Port 80')}); //Server listening on Port 80

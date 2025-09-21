@@ -1,0 +1,8 @@
+He, Jared
+Collaboration and References
+
+- Initial code gone over in class
+- "JavaScript Review" lecture
+- "Building an HTTP server" lecture
+- Google search queries 
+- Stack Overflow (most redirected from google search)
