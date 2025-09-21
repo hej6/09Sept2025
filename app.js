@@ -61,10 +61,10 @@ function schedule(queryObj, res)
 	availableTimes[queryObj.day].splice(index, 1); //Remove time slot
 
 	const newAppt = //Initializes and populates newAppt
-        {
-        	name: queryObj.name,
-                day: queryObj.day,
-                time: queryObj.time
+	{
+		name: queryObj.name,
+		day: queryObj.day,
+		time: queryObj.time
 	};
        	appointments.push(newAppt); //Adds newAppt to array
 	console.log('List of time slots: ', availableTimes); //Check in console
