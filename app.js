@@ -1,6 +1,7 @@
 const http = require('http');
 const url = require('url');
-
+const sendFile = require('./sendFile'); //Extra credit module
+const path = require('path'); //Needed for path parameter in sendFile
 
 const availableTimes = 
 {
@@ -34,7 +35,8 @@ let serverObj = http.createServer(function (req, res)
 			check(urlObj.query, res);
 			break;
 		default:
-			error(404, 'pathname not found', res);
+			const filePath = urlObj.pathname.slice(1);
+			sendFile(filePath, res);
 	}
 });
 
