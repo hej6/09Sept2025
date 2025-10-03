@@ -1,23 +1,46 @@
 const fs = require('fs');
+const path = require('path');
 
 //Function in seperate module to fulfill extra credit parameters
-function sendFile(path, res)
+function sendFile(filePath, res)
 {
-	const filePath = __dirname + '/public_html/' + path; //Always look inside public_html folder 
+	const publicPath = path.join(__dirname, '/public_html/', filePath); //ONLY look inside public_html folder 
+	const contentType = getType(filePath);
 
-	fs.readFile(filePath, 'utf8', (err, data) =>
+	fs.readFile(publicPath, (err, data) =>
 	{
 		if (err)
 		{
-			res.writeHead(500, {'Content-Type': 'text/plain'});
-			res.end(err.message);
+			sendResponse(res, 400, err.message, 'text/plain');
 		}
 		else
 		{
-			res.writeHead(200, {'Content-Type': 'text/html'});
-			res.end(data);
+			sendResponse(res, 200, data, contentType);
 		}
 	});
 }
 
-module.exports = sendFile;
+function getType(filePath)
+{
+	const ext = path.extname(filePath).toLowerCase(); //Catch capitals, convert to lower case
+	const contentTypes = //Short list of extensions, can always add more if needed
+        {
+                '.html': 'text/html',
+                '.js': 'application/javascript',
+                '.css': 'text/css',
+                '.txt': 'text/plain',
+                '.jpg': 'image/jpeg',
+                '.jpeg': 'image/jpeg'
+        };
+
+	return contentTypes[ext];
+}
+
+//Eliminate repetition. Handles write(), writeHead(), end(). Status is status code (200, 400, etc)
+function sendResponse(res, status, body, contentType = 'text/plain')
+{
+	res.writeHead(status, {'Content-Type': contentType});
+	res.end(body);
+}
+
+module.exports = {sendFile, sendResponse};

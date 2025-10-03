@@ -1,6 +1,6 @@
 const http = require('http');
 const url = require('url');
-const sendFile = require('./sendFile'); //Extra credit module
+const {sendFile, sendResponse} = require('./sendFile'); //Extra credit module
 const path = require('path'); //Needed for path parameter in sendFile
 
 const availableTimes = 
@@ -20,8 +20,9 @@ const appointments =
 
 let serverObj = http.createServer(function (req, res)
 {
+	console.log(req.url);
 	let urlObj = url.parse(req.url, true);
-	console.log(urlObj);
+	//console.log(urlObj); //Commented out to clean up console
 
 	switch (urlObj.pathname) //Execute based on query input by user
 	{
@@ -35,22 +36,22 @@ let serverObj = http.createServer(function (req, res)
 			check(urlObj.query, res);
 			break;
 		default:
-			const filePath = urlObj.pathname.slice(1);
+			let filepath;
+			if (urlObj.pathname === '/')
+			{
+				filePath = 'index.html';
+			}
+			else
+			{
+				const filePath = urlObj.pathname.slice(1); //Removes '/' for pathing
+			}
 			sendFile(filePath, res);
 	}
 });
 
 function schedule(queryObj, res)
 {
-	if (!queryObj.name || !queryObj.time || !queryObj.day) //Checks for missing variables
-	{
-		return error (400, 'Missing information', res);
-	}
-
-	if (!availableTimes[queryObj.day]) //Checks for day specifically
-	{
-		return error(400, 'Requested day is invalid', res);
-	}
+	if (!checkRequest(queryObj, res)) return; //Basic checks
 	
 	const index = availableTimes[queryObj.day].indexOf(queryObj.time); //Stores requested time slot
 
@@ -70,25 +71,12 @@ function schedule(queryObj, res)
 	};
 
 	appointments.push(newAppt); //Adds newAppt to array
-	console.log('List of time slots: ', availableTimes); //Check in console
-	console.log('List of appointments: ', appointments);
-	
-	res.writeHead(200, {'content-type': 'text/html'});
-	res.write('Appointment has been scheduled');
-	res.end();
+	sendResponse(res, 200, 'Appointment has been scheduled', 'text/html');
 }
 
 function cancel(queryObj, res)
 {
-	if (!queryObj.name || !queryObj.time || !queryObj.day) //Checks for missing variables
-        {
-                return error (400, 'Missing information', res);
-        }
-
-        if (!availableTimes[queryObj.day]) //Checks for day specifically
-        {
-                return error(400, 'Requested day is invalid', res);
-        }
+	if (!checkRequest(queryObj, res)) return; //Basic checks
 
 	const index = appointments.findIndex //Store index of appointment
 	(
@@ -97,19 +85,14 @@ function cancel(queryObj, res)
 		     a.time == queryObj.time
 	);
 
-	if (index === -1) //Checks for appointment 
+	if (index === -1) //Checks for appointment
 	{
 		return error(400, 'Appointment not found', res);
 	}
 	
 	const canceled = appointments.splice(index, 1)[0]; //Remove appointment
 	availableTimes[canceled.day].push(canceled.time); //Restore removed time slot 
-	console.log('List of time slots: ', availableTimes);
-	console.log('List of appointments: ', appointments);
-
-	res.writeHead(200, {'content-type': 'text/html'});
-	res.write('Appointment has been cancelled');
-	res.end();
+	sendResponse(res, 200, 'Appointment has been cancelled', 'text/html');
 }
 
 function check(queryObj, res)
@@ -128,8 +111,7 @@ function check(queryObj, res)
 
         if (index != -1) //Checks time slot
         {
-                res.write('Appointment time is available');
-		res.end();
+		sendResponse(res, 200, 'Appointment time is available', 'text/html');
         }
 	else
 	{
@@ -144,5 +126,19 @@ function error(status, message, res)
 	res.end();
 }
 
+function checkRequest(queryObj, res)
+{
+	if (!queryObj.name || !queryObj.time || !queryObj.day) //Checks for missing variables
+        {
+                return error (400, 'Missing information', res);
+        }
+
+        if (!availableTimes[queryObj.day]) //Checks for day specifically
+        {
+                return error(400, 'Requested day is invalid', res);
+        }
+
+	return true;
+}
 
 serverObj.listen(80, function() {console.log('Listening on Port 80')}); //Server listening on Port 80
