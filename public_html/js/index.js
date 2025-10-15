@@ -91,7 +91,7 @@ function errorHandler(status, responseText)
 	}
 	else
 	{
-		message = 'Status: ' + status; // Displays generic error message
+		message = 'Status: ' + status; // Displays generic error message. Mostly unnecessary since handled above.
 	}
 
 	alert('Error: ' + message);
