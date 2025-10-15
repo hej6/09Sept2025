@@ -1,8 +1,16 @@
 He, Jared
-Collaboration and References
+Collaboration and References for Homework 02
 
 - Initial code gone over in class
 - "JavaScript Review" lecture
 - "Building an HTTP server" lecture
 - Google search queries 
 - Stack Overflow (most redirected from google search)
+
+Collaboration and References for Homework 03
+
+- All references from above
+- Heavier utilization of Stack Overflow for specific commands
+- Google AI integrated into Google Search
+- "Reading and sending static files" lecture
+- "AJAX" lecture

@@ -1,0 +1,7 @@
+He, Jared
+Question 1
+
+The .. means the parent directory, or the directory containing the current one the user is in.
+
+The -R means recursive, which when applied to a given command tells it to execute in the specified 
+directory and all its subdirectories. 
